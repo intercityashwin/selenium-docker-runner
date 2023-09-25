@@ -4,36 +4,21 @@ pipeline{
 	
 	stages {
 		
-		stage('Build Jar'){
+		stage('Run Test'){
 			
 			steps{
-				bat "mvn clean package -DskipTests"
+				bat "docker compose up"
 			}
 		}
 
 
-		stage('Build Image'){
+		stage('Bring Grid Down'){
 			
 			steps{
-				bat "docker build -t intercityashwin/selenium ."
-			}
-		}
-
-		stage('Push Image'){
-			environment{
-			    DOCKER_HUB = credentials('dokcerhub-cred')
-			}
-
-			steps{
-                bat 'docker login -u ${DOCKER_HUB_USR} -p ${DOCKER_HUB_PSW}'
-				bat "docker push intercityashwin/selenium"
+				bat "docker compose down"
 			}
 		}
 	
 	}
-	post {
-	    always{
-	        bat "docker logout"
-	    }
-	}
+	
 }
